@@ -1,0 +1,22 @@
+--- a/packages/SystemUI/src/com/android/systemui/navigationbar/NavigationBarControllerImpl.java	2026-11-02 07:39:51.960037917 +0100
++++ b/packages/SystemUI/src/com/android/systemui/navigationbar/NavigationBarControllerImpl.java	2026-11-02 07:39:52.292041021 +0100
+@@ -27,6 +27,7 @@
+ import android.hardware.display.DisplayManager;
+ import android.os.Bundle;
+ import android.os.RemoteException;
++import android.os.SystemProperties;
+ import android.os.Trace;
+ import android.util.Log;
+ import android.util.SparseArray;
+@@ -289,6 +290,11 @@
+ 
+     @VisibleForTesting
+     boolean supportsTaskbar() {
++        // E-PAD: sin Launcher3 nadie dibuja la taskbar y en pantalla grande no quedaba ningún botón
++        // (ni Atrás); ro.epad.force_navbar=true usa la barra de navegación de SystemUI.
++        if (SystemProperties.getBoolean("ro.epad.force_navbar", false)) {
++            return false;
++        }
+         // Enable for tablets, unfolded state on a foldable device, (non handheld AND flag is set),
+         // or handheld when enableTaskbarOnPhones() returns true.
+         boolean foldedOrPhone = !mIsPhone || enableTaskbarOnPhones();

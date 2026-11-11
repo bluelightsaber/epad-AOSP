@@ -1,0 +1,9 @@
+# Eewrite E-PAD
+/dev/dri/card0          0666   system     graphics
+/dev/t1000              0660   system     system
+/dev/rfkill             0660   bluetooth  bluetooth
+# CONNSYS (WiFi/BT de la serie epad): BT por HCI estándar, WiFi por cfg80211
+/dev/ttyGS*             0660   system     system
+# GPS (mt6797-gps): canal STP del receptor y buzón del demonio
+/dev/stpgps             0660   gps        gps
+/dev/gps                0660   gps        gps

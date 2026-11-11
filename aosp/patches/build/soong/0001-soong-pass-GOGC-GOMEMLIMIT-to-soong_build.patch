@@ -1,0 +1,30 @@
+From 8f5772c9bd11324d68783087af95f3b01926d2a2 Mon Sep 17 00:00:00 2001
+From: bluelightsaber <26096600+bluelightsaber@users.noreply.github.com>
+Date: Fri, 30 Oct 2026 15:46:00 +0100
+Subject: [PATCH] soong: pass GOGC/GOMEMLIMIT to soong_build
+
+Change-Id: Ic9c5bc681e41d914bf88ef238586eddee77ab3e4
+---
+ ui/build/soong.go | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/ui/build/soong.go b/ui/build/soong.go
+index 4521b4a..bed91b5 100644
+--- a/ui/build/soong.go
++++ b/ui/build/soong.go
+@@ -215,6 +215,12 @@ func (pb PrimaryBuilderFactory) primaryBuilderInvocation(config Config) bootstra
+ 
+ 	commonArgs = append(commonArgs, "-l", filepath.Join(pb.config.FileListDir(), "Android.bp.list"))
+ 	invocationEnv := make(map[string]string)
++	// E-PAD: soong_build runs under env -i; pass Go GC limits through so it fits in RAM.
++	for _, k := range []string{"GOGC", "GOMEMLIMIT"} {
++		if v, ok := pb.config.Environment().Get(k); ok {
++			invocationEnv[k] = v
++		}
++	}
+ 	if pb.debugPort != "" {
+ 		//debug mode
+ 		commonArgs = append(commonArgs, "--delve_listen", pb.debugPort,
+-- 
+2.53.0
+

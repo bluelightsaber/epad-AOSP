@@ -1,0 +1,4 @@
+persist.mtk.wcn.combo.chipid=0x6797
+service.nvram_init=Ready
+ro.hardware=mt6797
+ro.build.type=userdebug

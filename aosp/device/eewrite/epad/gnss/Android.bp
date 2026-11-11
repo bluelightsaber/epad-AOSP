@@ -1,0 +1,19 @@
+// HAL GNSS de la E-PAD: AIDL sobre el HAL heredado de fábrica (gps.mt6797.so + mnld, en epad-firmware/gps)
+cc_binary {
+    name: "android.hardware.gnss-service.epad",
+    relative_install_path: "hw",
+    vendor: true,
+    init_rc: ["gnss-epad.rc"],
+    vintf_fragments: ["gnss-epad.xml"],
+    srcs: ["Gnss.cpp"],
+    defaults: ["gnss_use_latest_hal_aidl_ndk_shared"],
+    header_libs: ["libhardware_headers"],
+    shared_libs: [
+        "libbase",
+        "libbinder_ndk",
+        "libcutils",
+        "libhardware",
+        "liblog",
+        "libutils",
+    ],
+}

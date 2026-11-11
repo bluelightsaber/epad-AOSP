@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- E-PAD: Atrás/Inicio/Recientes centrados; a los lados, botones fijos del launcher para usarlos dentro de
+         cualquier app: modo de tinta y luz a la izquierda, giro y volumen a la derecha (NavKeys del launcher). -->
+    <string name="config_navBarLayout" translatable="false">key(188:content://org.epad.launcher.navicons/page),key(189:content://org.epad.launcher.navicons/sun);back,home,recent;key(190:content://org.epad.launcher.navicons/rotate),key(191:content://org.epad.launcher.navicons/speaker),right</string>
+</resources>

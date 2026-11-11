@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Inicio E-PAD</string>
+    <string name="ink_service_description">Pone el modo de tinta de cada app al abrirla (Mixto si no tiene uno elegido). No lee el contenido de las pantallas.</string>
+</resources>

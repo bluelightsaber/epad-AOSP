@@ -1,0 +1,11 @@
+# E-PAD: particiones propias con nombres epad_* (la eMMC de fábrica también tiene metadata y userdata: así no se
+# confunden nunca). Mismo fstab en la eMMC (p31-p33) y en la microSD; el disco lo elige boot_devices en el DT.
+# Sin cifrado de metadata (keydirectory): necesita dm-default-key, que solo tienen los kernels de Google; FBE sí.
+# <src>                                  <mnt_point>  <type>  <mnt_flags>                 <fs_mgr_flags>
+system                                   /system      erofs   ro                          wait,logical,first_stage_mount
+system_ext                               /system_ext  erofs   ro                          wait,logical,first_stage_mount
+product                                  /product     erofs   ro                          wait,logical,first_stage_mount
+vendor                                   /vendor      erofs   ro                          wait,logical,first_stage_mount
+/dev/block/by-name/epad_metadata         /metadata    ext4    noatime,nosuid,nodev        wait,formattable,first_stage_mount
+/dev/block/by-name/epad_data             /data        f2fs    noatime,nosuid,nodev        wait,formattable,latemount,fileencryption=aes-256-xts:aes-256-cts
+/dev/block/zram0                         none         swap    defaults                    zramsize=25%,max_comp_streams=4

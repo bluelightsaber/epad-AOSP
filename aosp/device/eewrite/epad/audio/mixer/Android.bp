@@ -1,0 +1,6 @@
+cc_binary {
+    name: "epad-audio-mixer",
+    vendor: true,
+    srcs: ["epad-audio-mixer.c"],
+    shared_libs: ["libtinyalsa"],
+}

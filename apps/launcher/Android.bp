@@ -1,0 +1,28 @@
+// Launcher de la E-PAD: Kotlin sin AndroidX, app de sistema firmada con la plataforma.
+android_app {
+    name: "EpadLauncher",
+    srcs: ["src/**/*.kt"],
+    resource_dirs: ["res"],
+    manifest: "AndroidManifest.xml",
+    platform_apis: true,
+    certificate: "platform",
+    privileged: true,
+    // también instalable en el Android 7.1 de fábrica para probar la interfaz
+    min_sdk_version: "25",
+    // sustituye al launcher de AOSP y quita lo que no sirve en la E-PAD: no tiene cámara (ni webcam por USB)
+    // y en tinta no tienen sentido los fondos animados, el salvapantallas de fotos ni el widget de búsqueda
+    overrides: [
+        "Launcher3",
+        "Launcher3QuickStep",
+        "Camera2",
+        "CameraExtensionsProxy",
+        "DeviceAsWebcam",
+        "LiveWallpapersPicker",
+        "PhotoTable",
+        "QuickSearchBox",
+    ],
+    optimize: {
+        enabled: true,
+        shrink: true,
+    },
+}

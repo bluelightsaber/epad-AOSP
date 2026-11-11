@@ -1,0 +1,16 @@
+// Pantallas de la E-PAD: diseña las imágenes que el T1000 deja en la tinta al reposar y al apagarse
+// (atributos sleep_image y poweroff_image del driver eink-t1000). Kotlin sin AndroidX, app de sistema persistente.
+android_app {
+    name: "EpadPantallas",
+    srcs: ["src/**/*.kt"],
+    resource_dirs: ["res"],
+    manifest: "AndroidManifest.xml",
+    platform_apis: true,
+    certificate: "platform",
+    privileged: true,
+    static_libs: ["zxing-core"],
+    optimize: {
+        enabled: true,
+        shrink: true,
+    },
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- E-PAD: proyectos que no se compilan, quitados para que soong_build quepa en 18 GB. Borrar este fichero y repo sync -l para restaurar. -->
+<manifest>
+  <remove-project name="device/amlogic/yukawa" path="device/amlogic/yukawa" />
+  <remove-project name="device/amlogic/yukawa-kernel" path="device/amlogic/yukawa-kernel" />
+  <remove-project name="device/generic/armv7-a-neon" path="device/generic/armv7-a-neon" />
+  <remove-project name="device/generic/car" path="device/generic/car" />
+  <remove-project name="device/generic/x86" path="device/generic/x86" />
+  <remove-project name="device/generic/x86_64" path="device/generic/x86_64" />
+  <remove-project name="device/google/atv" path="device/google/atv" />
+  <remove-project name="device/google/cuttlefish" path="device/google/cuttlefish" />
+  <remove-project name="device/google/cuttlefish_prebuilts" path="device/google/cuttlefish_prebuilts" />
+  <remove-project name="device/google/cuttlefish_vmm" path="device/google/cuttlefish_vmm" />
+  <remove-project name="device/google/trout" path="device/google/trout" />
+  <remove-project name="device/google_car" path="device/google_car" />
+  <remove-project name="device/linaro/dragonboard-kernel" path="device/linaro/dragonboard-kernel" />
+  <remove-project name="device/linaro/hikey" path="device/linaro/hikey" />
+  <remove-project name="device/linaro/hikey-kernel" path="device/linaro/hikey-kernel" />
+  <remove-project name="platform/hardware/telink/atv/refDesignRcu" path="hardware/telink/atv/refDesignRcu" />
+  <remove-project name="platform/hardware/ti/am57x" path="hardware/ti/am57x" />
+  <remove-project name="platform/test/catbox" path="test/catbox" />
+  <remove-project name="platform/test/cts-root" path="test/cts-root" />
+  <remove-project name="platform/test/dittosuite" path="test/dittosuite" />
+  <remove-project name="platform/test/mlts/benchmark" path="test/mlts/benchmark" />
+  <remove-project name="platform/test/mlts/models" path="test/mlts/models" />
+  <remove-project name="platform/test/robolectric-extensions" path="test/robolectric-extensions" />
+  <remove-project name="platform/test/suite_harness" path="test/suite_harness" />
+  <remove-project name="platform/test/vts" path="test/vts" />
+  <remove-project name="platform/test/vts-testcase/kernel" path="test/vts-testcase/kernel" />
+  <remove-project name="platform/test/vts-testcase/nbu" path="test/vts-testcase/nbu" />
+  <remove-project name="platform/test/vts-testcase/performance" path="test/vts-testcase/performance" />
+  <remove-project name="platform/test/vts-testcase/security" path="test/vts-testcase/security" />
+  <remove-project name="platform/test/vts-testcase/vndk" path="test/vts-testcase/vndk" />
+</manifest>

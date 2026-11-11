@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- E-PAD: sin animaciones (cada fotograma intermedio es un refresco de tinta) y pantalla encendida más tiempo
+     (la imagen E-Ink se mantiene sin consumo; el apagado lo decide el T1000). -->
+<resources>
+    <fraction name="def_window_animation_scale">0%</fraction>
+    <fraction name="def_window_transition_scale">0%</fraction>
+    <bool name="def_haptic_feedback">false</bool>
+    <integer name="def_screen_off_timeout">600000</integer>
+</resources>

@@ -1,0 +1,127 @@
+# Eewrite E-PAD (lk pasa androidboot.hardware=mt6797)
+import /vendor/etc/init/hw/init.mt6797.usb.rc
+
+on early-init
+# El kernel mainline no tiene ashmem (quitado de staging): sin esto, libcutils sigue usando /dev/ashmem en las apps
+# con targetSdk antiguo y CursorWindow falla («Row too big to fit into CursorWindow»; F-Droid se cerraba)
+    setprop sys.use_memfd true
+    # lk solo conserva ~99 caracteres de la línea de órdenes de la boot.img: la ruta del firmware va aquí
+    write /sys/module/firmware_class/parameters/path /vendor/firmware
+
+on init
+    # zram (fstab: 1/4 de la RAM) con lz4, como la Dragonboard
+    write /sys/block/zram0/comp_algorithm lz4
+
+on early-fs
+    start vold
+
+on early-boot
+    # UDC del SSUSB (mtu3) para el gadget configfs de init.usb.configfs.rc
+    setprop vendor.usb.controller 11271000.usb
+
+on boot
+    # Luz frontal (leds-pwm): la manejan el launcher (EpadLauncher) y system_server
+    chown system system /sys/class/leds/frontlight-cold/brightness
+    chown system system /sys/class/leds/frontlight-warm/brightness
+    chmod 0666 /sys/class/leds/frontlight-cold/brightness
+    chmod 0666 /sys/class/leds/frontlight-warm/brightness
+    # T1000: modo de refresco (0 lectura, 1 mixto, 2 navegación, 17 GC), refresco automático y sueño.
+    # Escritura abierta por DAC; SELinux (sysfs_epad) limita quién puede.
+    chown system system /sys/bus/i2c/devices/1-0006/mode
+    chown system system /sys/bus/i2c/devices/1-0006/auto_refresh
+    chown system system /sys/bus/i2c/devices/1-0006/sleep
+    chmod 0666 /sys/bus/i2c/devices/1-0006/mode
+    chmod 0664 /sys/bus/i2c/devices/1-0006/auto_refresh
+    # pantalla de reposo (la prepara el launcher)
+    chown system system /sys/bus/i2c/devices/1-0006/sleep_image
+    chown system system /sys/bus/i2c/devices/1-0006/sleep_screen
+    chmod 0666 /sys/bus/i2c/devices/1-0006/sleep_image
+    chmod 0666 /sys/bus/i2c/devices/1-0006/sleep_screen
+    chown system system /sys/bus/i2c/devices/1-0006/poweroff_image
+    chmod 0666 /sys/bus/i2c/devices/1-0006/poweroff_image
+    chmod 0664 /sys/bus/i2c/devices/1-0006/sleep
+    # GPS: atributos que mnld escribe (driver mt6797-gps; solo guardan lo escrito)
+    chown gps gps /sys/class/gpsdrv/gps/pwrctl
+    chown gps gps /sys/class/gpsdrv/gps/suspend
+    chown gps gps /sys/class/gpsdrv/gps/status
+    chown gps gps /sys/class/gpsdrv/gps/state
+    chown gps gps /sys/class/gpsdrv/gps/pwrsave
+    chown gps gps /sys/class/gpsdrv/gps/rdelay
+
+on post-fs-data
+    mkdir /data/vendor/wifi 0770 wifi wifi
+    mkdir /data/vendor/wifi/wpa 0770 wifi wifi
+    mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
+    # GPS: rutas fijas del mnld de fábrica; su NVRAM (TCXO, LNA) se copia de /vendor/gps/nvram en cada arranque
+    mkdir /data/gps_mnl 0771 gps system
+    mkdir /data/agps_supl 0771 gps system
+    mkdir /data/mpe_mnl 0771 gps system
+    mkdir /data/misc/gps 0770 gps system
+    mkdir /data/nvram 0771 gps system
+    mkdir /data/nvram/APCFG 0771 gps system
+    mkdir /data/nvram/APCFG/APRDEB 0771 gps system
+    copy /vendor/gps/nvram/GPS /data/nvram/APCFG/APRDEB/GPS
+    chown gps system /data/nvram/APCFG/APRDEB/GPS
+    chmod 0660 /data/nvram/APCFG/APRDEB/GPS
+    copy /vendor/gps/nvram/fstab.mt6797 /data/nvram/fstab.mt6797
+    chmod 0644 /data/nvram/fstab.mt6797
+
+on fs
+    mount_all /vendor/etc/fstab.mt6797 --early
+    swapon_all /vendor/etc/fstab.mt6797
+
+on late-fs
+    mount_all /vendor/etc/fstab.mt6797 --late
+
+on post-fs
+
+
+# Proteger la batería (persist.vendor.epad.charge_mode, lo elige el usuario en Ajustes > Batería > Proteger la
+# batería, app EpadLauncher):
+#  normal  : fin de carga a 4,352 V (nominal), sin umbrales
+#  limit80 : fin de carga del bq24190 a 4,112 V (~80 % en la curva OCV de mt6351-battery)
+#  plugged : siempre enchufada: mt6351-battery pausa la carga al 55 % y la reanuda al 45 %; el sistema va del cable
+on property:persist.vendor.epad.charge_mode=normal
+    write /sys/class/power_supply/battery/charge_control_end_threshold 100
+    write /sys/class/power_supply/battery/charge_control_start_threshold 0
+    write /sys/class/power_supply/bq24190-charger/constant_charge_voltage 4352000
+
+on property:persist.vendor.epad.charge_mode=limit80
+    write /sys/class/power_supply/battery/charge_control_end_threshold 100
+    write /sys/class/power_supply/battery/charge_control_start_threshold 0
+    write /sys/class/power_supply/bq24190-charger/constant_charge_voltage 4112000
+
+on property:persist.vendor.epad.charge_mode=plugged
+    write /sys/class/power_supply/bq24190-charger/constant_charge_voltage 4352000
+    write /sys/class/power_supply/battery/charge_control_start_threshold 45
+    write /sys/class/power_supply/battery/charge_control_end_threshold 55
+
+# GPS: mnld de fábrica (Android 7, 32 bits) con su enlazador y bibliotecas de /vendor/gps; libpropshim.so le
+# contesta las propiedades (su libc no entiende el área actual). Habla con /dev/stpgps y con el HAL
+# (android.hardware.gnss-service.epad) por sockets UDP abstractos.
+service mnld /vendor/gps/mnld
+    class main
+    user gps
+    group gps inet misc system
+    setenv LD_LIBRARY_PATH /vendor/gps/lib
+    setenv LD_PRELOAD /vendor/gps/lib/libpropshim.so
+    socket mnld stream 660 gps system
+
+# WiFi: el framework arranca el suplicante por AIDL (ctl.interface_start); sin esta entrada no había servicio
+# que arrancar y el WiFi no llegaba a encenderse (aosp-22). Configuración en /data/vendor/wifi/wpa (plantilla en
+# /vendor/etc/wifi/wpa_supplicant.conf).
+service wpa_supplicant /vendor/bin/hw/wpa_supplicant -O/data/vendor/wifi/wpa/sockets -g@android:wpa_wlan0
+    interface aidl android.hardware.wifi.supplicant.ISupplicant/default
+    socket wpa_wlan0 dgram 660 wifi wifi
+    user wifi
+    group system wifi inet keystore
+    capabilities NET_ADMIN NET_RAW
+    disabled
+    oneshot
+
+# Rutas del códec (ver audio/mixer); antes de que arranque el HAL de audio
+service vendor.audio-mixer /vendor/bin/epad-audio-mixer
+    class early_hal
+    user audio
+    group audio
+    oneshot

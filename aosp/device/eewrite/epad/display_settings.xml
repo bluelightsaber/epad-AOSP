@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<!-- Sin acelerómetro: fijar la rotación a la elegida por el usuario (FIXED_TO_USER_ROTATION_ENABLED = 2) -->
+<display-settings>
+<config identifier="0" />
+<display name="local:0" fixedToUserRotation="2" />
+</display-settings>

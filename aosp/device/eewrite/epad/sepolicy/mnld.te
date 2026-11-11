@@ -1,0 +1,8 @@
+# mnld de fábrica (GPS, 32 bits de Android 7): init necesita un dominio para arrancarlo. Sin reglas aún: el
+# sistema va en permisivo (androidboot.selinux=permissive).
+type mnld, domain;
+type mnld_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(mnld)
+
+# /dev/stpgps y /dev/gps (driver mt6797-gps)
+type gps_device, dev_type;

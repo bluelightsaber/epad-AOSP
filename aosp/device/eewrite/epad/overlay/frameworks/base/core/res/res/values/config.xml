@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- El launcher (EpadLauncher) lee las notificaciones para sus avisos -->
+    <string name="config_defaultListenerAccessPackages" translatable="false">org.epad.launcher</string>
+    <!-- Sin animación de giro de pantalla ni de arranque de apps en E-Ink -->
+    <bool name="config_animateScreenLights">false</bool>
+    <!-- Tablet sin teléfono -->
+    <bool name="config_voice_capable">false</bool>
+    <bool name="config_sms_capable">false</bool>
+    <!-- Luz frontal: la gestiona el launcher (fría/cálida); sin brillo automático (no hay sensor de luz) -->
+    <bool name="config_automatic_brightness_available">false</bool>
+    <!-- Sin pantalla de bloqueo (como la de fábrica): se enciende directa al launcher -->
+    <bool name="config_disableLockscreenByDefault">true</bool>
+    <!-- Navegación con 3 botones (elegido por el usuario): los gestos no se ven mientras se arrastra en tinta -->
+    <integer name="config_navBarInteractionMode">0</integer>
+    <!-- Sin teclas físicas de navegación: la barra hace falta (por omisión AOSP no la muestra) -->
+    <bool name="config_showNavigationBar">true</bool>
+    <!-- Pulsación larga del botón de encendido: menú de apagado (no hay asistente) -->
+    <integer name="config_longPressOnPowerBehavior">1</integer>
+    <!-- Sin salvapantallas: mantiene la CPU despierta mientras carga; la tinta ya conserva la imagen -->
+    <bool name="config_dreamsEnabledByDefault">false</bool>
+</resources>

@@ -1,0 +1,43 @@
+// Apps de terceros preinstaladas (sin Google): APK oficiales de f-droid.org, guardados fuera de git en
+// backup/apks/ y copiados aquí por scripts/aosp-preparar.sh. Para actualizar: bajar el APK nuevo y cambiar el nombre.
+
+// F-Droid: tienda de apps libres
+android_app_import {
+    name: "FDroid",
+    apk: "org.fdroid.fdroid_1023052.apk",
+    presigned: true,
+    preprocessed: true,
+    product_specific: true,
+    dex_preopt: { enabled: false },
+}
+
+// Extensión privilegiada: F-Droid instala y actualiza sin preguntar cada vez
+android_app_import {
+    name: "FDroidPrivilegedExtension",
+    apk: "org.fdroid.fdroid.privileged_2070.apk",
+    presigned: true,
+    preprocessed: true,
+    skip_preprocessed_apk_checks: true, // dex comprimido: funciona, solo ocupa algo más de RAM
+    privileged: true,
+    product_specific: true,
+    dex_preopt: { enabled: false },
+    required: ["privapp-permissions-org.fdroid.fdroid.privileged.xml"],
+}
+
+prebuilt_etc {
+    name: "privapp-permissions-org.fdroid.fdroid.privileged.xml",
+    src: "privapp-permissions-org.fdroid.fdroid.privileged.xml",
+    sub_dir: "permissions",
+    product_specific: true,
+}
+
+// Fennec F-Droid: Firefox sin piezas propietarias (variante arm64-v8a); lo actualiza F-Droid
+android_app_import {
+    name: "Fennec",
+    apk: "org.mozilla.fennec_fdroid_1590020.apk",
+    presigned: true,
+    preprocessed: true, // targetSdk >= 30: firma v2, no tocar el APK
+    skip_preprocessed_apk_checks: true, // libs JNI comprimidas, pero extractNativeLibs=true
+    product_specific: true,
+    dex_preopt: { enabled: false },
+}

@@ -1,0 +1,5 @@
+# Habla con mnld (sockets UDP abstractos mtk_hal2mnl / mtk_mnl2hal)
+service vendor.gnss-epad /vendor/bin/hw/android.hardware.gnss-service.epad
+    class hal
+    user gps
+    group gps system inet

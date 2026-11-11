@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- E-PAD: mosaicos de tinta del launcher primero; fuera los que no aplican (linterna, cartera, grabar pantalla). -->
+<resources>
+    <string name="quick_settings_tiles_default" translatable="false">
+        custom(org.epad.launcher/.LightTile),custom(org.epad.launcher/.RefreshTile),custom(org.epad.launcher/.InkModeTile),custom(org.epad.launcher/.RotateTile),custom(org.epad.launcher/.VolumeTile),internet,bt,dnd,airplane,alarm,battery
+    </string>
+    <!-- Android 17 con wifi/datos separados usa esta lista -->
+    <string name="quick_settings_tiles_default_split" translatable="false">
+        custom(org.epad.launcher/.LightTile),custom(org.epad.launcher/.RefreshTile),custom(org.epad.launcher/.InkModeTile),custom(org.epad.launcher/.RotateTile),custom(org.epad.launcher/.VolumeTile),wifi,bt,dnd,airplane,alarm,battery
+    </string>
+    <!-- Botones fijos de la barra (values-sw600dp/sw900dp): las pulsaciones van al launcher (NavKeyReceiver) -->
+    <string name="config_navBarCustomKeyReceiver" translatable="false">org.epad.launcher</string>
+</resources>

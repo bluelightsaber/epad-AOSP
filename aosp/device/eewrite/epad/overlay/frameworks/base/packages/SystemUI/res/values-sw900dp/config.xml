@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- E-PAD (936 dp): la disposición de sw900dp separa Atrás/Inicio a la izquierda y Recientes al borde derecho,
+         encima del botón de ajustes del lanzador. Los tres botones juntos y centrados con los
+         botones fijos del launcher a los lados, como en sw600dp. -->
+    <string name="config_navBarLayout" translatable="false">key(188:content://org.epad.launcher.navicons/page),key(189:content://org.epad.launcher.navicons/sun);back,home,recent;key(190:content://org.epad.launcher.navicons/rotate),key(191:content://org.epad.launcher.navicons/speaker),right</string>
+</resources>

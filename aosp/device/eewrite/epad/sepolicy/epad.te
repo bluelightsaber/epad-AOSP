@@ -1,0 +1,13 @@
+# Luz frontal y T1000 (sysfs) y /dev/t1000
+type sysfs_epad, sysfs_type, fs_type;
+type epad_t1000_device, dev_type;
+
+# EpadLauncher (firmado con la clave de plataforma → platform_app) y system_server
+allow { platform_app system_server } sysfs_epad:dir search;
+allow { platform_app system_server } sysfs_epad:file rw_file_perms;
+allow system_server epad_t1000_device:chr_file rw_file_perms;
+
+
+# /dev/dri (directorio de simpledrm; card0 es graphics_device)
+type dri_device, dev_type;
+allow domain dri_device:dir r_dir_perms;

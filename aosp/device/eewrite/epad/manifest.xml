@@ -1,0 +1,3 @@
+<!-- Manifest VINTF del dispositivo: los HAL AIDL aportan sus propios fragmentos -->
+<manifest version="1.0" type="device" target-level="202604">
+</manifest>

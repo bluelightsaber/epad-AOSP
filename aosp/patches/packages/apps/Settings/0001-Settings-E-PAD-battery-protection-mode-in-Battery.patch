@@ -1,0 +1,107 @@
+diff -uNr a/res/values/epad_charge_mode.xml b/res/values/epad_charge_mode.xml
+--- a/res/values/epad_charge_mode.xml	1970-01-01 01:00:00.000000000 +0100
++++ b/res/values/epad_charge_mode.xml	2026-11-02 22:50:52.262694649 +0100
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- E-PAD: modo de carga en Ajustes > Batería (EpadChargeModePreferenceController) -->
++<resources>
++    <string name="epad_charge_mode_title" translatable="false">Proteger la batería</string>
++    <string-array name="epad_charge_mode_entries" translatable="false">
++        <item>Normal: carga completa al 100 %</item>
++        <item>Hasta 80 %: se degrada menos</item>
++        <item>Siempre enchufada: entre 45 y 55 %</item>
++    </string-array>
++    <string-array name="epad_charge_mode_values" translatable="false">
++        <item>normal</item>
++        <item>limit80</item>
++        <item>plugged</item>
++    </string-array>
++</resources>
+diff -uNr a/res/xml/power_usage_summary.xml b/res/xml/power_usage_summary.xml
+--- a/res/xml/power_usage_summary.xml	2026-11-02 22:50:52.225607990 +0100
++++ b/res/xml/power_usage_summary.xml	2026-11-02 22:50:52.257838216 +0100
+@@ -68,6 +68,18 @@
+             settings:keywords="@string/keywords_battery_adaptive_preferences" />
+     </com.android.settingslib.widget.UntitledPreferenceCategory>
+ 
++    <!-- E-PAD: modo de carga (normal, hasta 80 % o siempre enchufada); lo aplica init al cargador -->
++    <com.android.settingslib.widget.UntitledPreferenceCategory
++        android:key="epad_charge_category">
++        <ListPreference
++            android:key="epad_charge_mode"
++            android:title="@string/epad_charge_mode_title"
++            android:dialogTitle="@string/epad_charge_mode_title"
++            android:entries="@array/epad_charge_mode_entries"
++            android:entryValues="@array/epad_charge_mode_values"
++            settings:controller="com.android.settings.fuelgauge.EpadChargeModePreferenceController" />
++    </com.android.settingslib.widget.UntitledPreferenceCategory>
++
+     <com.android.settingslib.widget.UntitledPreferenceCategory
+         android:key="percentage_category">
+         <SwitchPreferenceCompat
+diff -uNr a/src/com/android/settings/fuelgauge/EpadChargeModePreferenceController.java b/src/com/android/settings/fuelgauge/EpadChargeModePreferenceController.java
+--- a/src/com/android/settings/fuelgauge/EpadChargeModePreferenceController.java	1970-01-01 01:00:00.000000000 +0100
++++ b/src/com/android/settings/fuelgauge/EpadChargeModePreferenceController.java	2026-11-02 22:50:52.265694676 +0100
+@@ -0,0 +1,62 @@
++/*
++ * E-PAD: modo de carga. init aplica persist.vendor.epad.charge_mode al cargador (bq24190) y al driver de
++ * batería: normal (100 %), limit80 (hasta 80 %) o plugged (se mantiene entre 45 y 55 % y la tablet se alimenta
++ * del cable).
++ */
++package com.android.settings.fuelgauge;
++
++import android.content.Context;
++import android.os.SystemProperties;
++
++import androidx.preference.ListPreference;
++import androidx.preference.Preference;
++import androidx.preference.PreferenceScreen;
++
++import com.android.settings.core.BasePreferenceController;
++
++public class EpadChargeModePreferenceController extends BasePreferenceController
++        implements Preference.OnPreferenceChangeListener {
++    private static final String PROP = "persist.vendor.epad.charge_mode";
++
++    public EpadChargeModePreferenceController(Context context, String key) {
++        super(context, key);
++    }
++
++    @Override
++    public int getAvailabilityStatus() {
++        return AVAILABLE;
++    }
++
++    @Override
++    public void displayPreference(PreferenceScreen screen) {
++        super.displayPreference(screen);
++        Preference p = screen.findPreference(getPreferenceKey());
++        if (p != null) {
++            p.setOnPreferenceChangeListener(this);
++        }
++    }
++
++    @Override
++    public void updateState(Preference preference) {
++        super.updateState(preference);
++        ListPreference list = (ListPreference) preference;
++        list.setValue(SystemProperties.get(PROP, "normal"));
++        if (list.getEntry() == null) {
++            list.setValueIndex(0);
++        }
++        list.setSummary(list.getEntry() == null ? null : list.getEntry().toString().replace("%", "%%"));
++    }
++
++    @Override
++    public boolean onPreferenceChange(Preference preference, Object newValue) {
++        try {
++            SystemProperties.set(PROP, (String) newValue);
++        } catch (RuntimeException e) {
++            return false;
++        }
++        ListPreference list = (ListPreference) preference;
++        list.setValue((String) newValue);
++        list.setSummary(list.getEntry() == null ? null : list.getEntry().toString().replace("%", "%%"));
++        return false;
++    }
++}

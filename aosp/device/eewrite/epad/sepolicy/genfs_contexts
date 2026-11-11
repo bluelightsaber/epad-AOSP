@@ -1,0 +1,3 @@
+# Luz frontal (pwm-leds) y atributos del T1000 (eink-t1000, i2c1 0x06): ver init.mt6797.rc
+genfscon sysfs /devices/platform/frontlight/leds	u:object_r:sysfs_epad:s0
+genfscon sysfs /devices/platform/11008000.i2c/i2c-1/1-0006	u:object_r:sysfs_epad:s0

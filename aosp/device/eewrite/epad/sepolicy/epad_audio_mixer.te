@@ -1,0 +1,5 @@
+type epad_audio_mixer, domain;
+type epad_audio_mixer_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(epad_audio_mixer)
+allow epad_audio_mixer audio_device:dir search;
+allow epad_audio_mixer audio_device:chr_file rw_file_perms;

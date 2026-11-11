@@ -1,0 +1,23 @@
+From: bluelightsaber <26096600+bluelightsaber@users.noreply.github.com>
+Subject: [PATCH] minigbm: drop DRM master after opening the node
+
+With simpledrm (card node only) the allocator opened card0 first and kept
+DRM master, so drm_hwcomposer fell back to a fake 1024x768 display.
+---
+diff --git a/cros_gralloc/cros_gralloc_driver.cc b/cros_gralloc/cros_gralloc_driver.cc
+index 706dee9..dee8210 100644
+--- a/cros_gralloc/cros_gralloc_driver.cc
++++ b/cros_gralloc/cros_gralloc_driver.cc
+@@ -109,6 +109,12 @@ static struct driver *init_try_node(int idx, char const *str)
+ 	if (fd < 0)
+ 		return NULL;
+ 
++	/*
++	 * With card nodes (simpledrm has no render node) the first opener becomes DRM master; the allocator
++	 * only needs dumb buffers, so give master up for the composer (drm_hwcomposer needs it for KMS).
++	 */
++	drmDropMaster(fd);
++
+ 	drv = drv_create(fd, NULL);
+ 	if (!drv)
+ 		close(fd);
